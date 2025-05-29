@@ -29,17 +29,19 @@
 
     <div class="courses-list container-fluid mt-3 mb-3">
         {% for course in courses %}
+            {% set bg_image_url = url_for('image', image_id=course.background_image_id) %} {# ОПРЕДЕЛЯЕМ ПЕРЕМЕННУЮ #}
             <div class="row p-3 border rounded mb-3" data-url="{{ url_for('courses.show', course_id=course.id) }}">
                 <div class="col-md-3 mb-3 mb-md-0 d-flex align-items-center justify-content-center">
-                    <div class="course-logo" style="background-image: url({{ url_for('image', image_id=course.background_image_id) }});">
+                    <div class="course-logo" style="background-image: url('{{ bg_image_url }}');"> {# ИСПОЛЬЗУЕМ ПЕРЕМЕННУЮ #}
                     </div>
                 </div>
                 <div class="col-md-9 align-items-center">
+                    <!-- ... остальное содержимое карточки курса ... -->
                     <div class="d-flex">
                         <h4 class="text-uppercase">{{ course.name }}</h4>
                         <p class="ms-auto rating">
                             <span>★</span> <span>{{ "%.2f" | format(course.rating) }}</span>
-                        </p> 
+                        </p>
                     </div>
                     <p class="text-muted my-3">{{ course.author.full_name }}</p>
                     <p>{{ course.short_desc | truncate(200) }}</p>

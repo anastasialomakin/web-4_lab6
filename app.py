@@ -1,7 +1,7 @@
 from flask import Flask, render_template, send_from_directory
 from flask_migrate import Migrate
 from sqlalchemy.exc import SQLAlchemyError
-from models import db, Category, Image
+from models import db, Category, Image 
 from auth import bp as auth_bp, init_login_manager
 from courses import bp as courses_bp
 
@@ -37,3 +37,22 @@ def image(image_id):
     img = db.get_or_404(Image, image_id)
     return send_from_directory(app.config['UPLOAD_FOLDER'],
                                img.storage_filename)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
+
+""" from models import db, User
+
+existing_user = db.session.execute(db.select(User).filter_by(login='user1')).scalar_one_or_none()
+
+if not existing_user:
+    user = User(first_name='Петр', last_name='Петров', middle_name='Иванович', login='user1') 
+    user.set_password('qwerty')
+    db.session.add(user)
+    db.session.commit()
+    print("Пользователь 'user' успешно создан.")
+else:
+    print("Пользователь 'user' уже существует.")
+
+exit() """

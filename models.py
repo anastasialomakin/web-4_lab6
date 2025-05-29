@@ -32,6 +32,22 @@ class Category(Base):
     def __repr__(self):
         return '<Category %r>' % self.name
 
+class Review(Base): # Убедись, что Base - это твоя DeclarativeBase
+    __tablename__ = 'reviews'
+
+    id: Mapped[int] = mapped_column(Integer, primary_key=True)
+    rating: Mapped[int] = mapped_column(Integer, nullable=False)
+    text: Mapped[str] = mapped_column(Text, nullable=False)
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=datetime.now)
+    course_id: Mapped[int] = mapped_column(ForeignKey("courses.id"), nullable=False)
+    user_id: Mapped[int] = mapped_column(ForeignKey("users.id"), nullable=False)
+
+    # Отношения
+    course: Mapped["Course"] = relationship(back_populates="reviews")
+    user: Mapped["User"] = relationship(back_populates="reviews_written") # Изменил на reviews_written для ясности
+
+    def __repr__(self):
+        return f'<Review {self.id} by User {self.user_id} for Course {self.course_id}>'
 
 class User(Base, UserMixin):
     __tablename__ = 'users'
@@ -43,6 +59,7 @@ class User(Base, UserMixin):
     login: Mapped[str] = mapped_column(String(100), unique=True)
     password_hash: Mapped[str] = mapped_column(String(200))
     created_at: Mapped[datetime] = mapped_column(default=datetime.now)
+    reviews_written: Mapped[List["Review"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -74,6 +91,7 @@ class Course(Base):
     author: Mapped["User"] = relationship()
     category: Mapped["Category"] = relationship(lazy=False)
     bg_image: Mapped["Image"] = relationship()
+    reviews: Mapped[List["Review"]] = relationship(back_populates="course", cascade="all, delete-orphan", lazy='dynamic')
 
     def __repr__(self):
         return '<Course %r>' % self.name

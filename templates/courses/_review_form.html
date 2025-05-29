@@ -1,0 +1,34 @@
+{% if current_user.is_authenticated %}
+    {% if current_user_review %} {# current_user_review передается из контроллера #}
+        <div class="alert alert-info">
+            <h5>Ваш отзыв об этом курсе:</h5>
+            <p><strong>Оценка: {{ current_user_review.rating }}/5</strong></p>
+            <p>{{ current_user_review.text | safe }}</p>
+            <small class="text-muted">Оставлен: {{ current_user_review.created_at.strftime('%d.%m.%Y в %H:%M') }}</small>
+        </div>
+    {% else %}
+        <h3 class="mt-4">Оставить свой отзыв</h3>
+        <form method="POST" action="{{ url_for('courses.add_review', course_id=course.id) }}" class="p-3 border rounded">
+            <div class="mb-3">
+                <label for="rating" class="form-label">Ваша оценка:</label>
+                <select name="rating" id="rating" class="form-select" required>
+                    <option value="5" selected>5 -- отлично</option>
+                    <option value="4">4 -- хорошо</option>
+                    <option value="3">3 -- удовлетворительно</option>
+                    <option value="2">2 -- неудовлетворительно</option>
+                    <option value="1">1 -- плохо</option>
+                    <option value="0">0 -- ужасно</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="text" class="form-label">Текст отзыва:</label>
+                <textarea name="text" id="text" rows="4" class="form-control" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-success">Отправить отзыв</button>
+        </form>
+    {% endif %}
+{% else %}
+    <p class="alert alert-warning">
+        <a href="{{ url_for('auth.login', next=request.url) }}">Войдите в систему</a>, чтобы оставить отзыв.
+    </p>
+{% endif %}

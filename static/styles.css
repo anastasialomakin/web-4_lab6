@@ -34,3 +34,7 @@
     background-position: center;
     background-size: cover;
 }
+
+.review-text {
+    white-space: pre-wrap; 
+}
