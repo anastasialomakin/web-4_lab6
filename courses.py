@@ -90,7 +90,6 @@ def all_reviews(course_id):
     page = request.args.get('page', 1, type=int)
     sort_by = request.args.get('sort_by', 'newest')  # newest, positive, negative
 
-    # Начинаем с QueryBuilder от course.reviews
     reviews_query = course.reviews
 
     if sort_by == 'positive':
@@ -100,14 +99,11 @@ def all_reviews(course_id):
     else:  # newest (default)
         reviews_query = reviews_query.order_by(Review.created_at.desc())
 
-    # Пагинация
-    # Убедись, что в config.py есть PER_PAGE или установи значение здесь
-    # Например, app.config.setdefault('PER_PAGE_REVIEWS', 5)
-    # Или просто per_page=5
+    # пагинация
     pagination_obj = db.paginate(reviews_query, page=page, per_page=5, error_out=False)
     reviews_list = pagination_obj.items
 
-    # Для пункта 5: Проверим, оставлял ли текущий пользователь отзыв
+    # оставлял ли текущий пользователь отзыв
     current_user_review_on_course = None
     if current_user.is_authenticated:
         current_user_review_on_course = course.reviews.filter_by(user_id=current_user.id).first()
@@ -125,7 +121,7 @@ def all_reviews(course_id):
 def add_review(course_id):
     course = db.get_or_404(Course, course_id)
 
-    # Проверка, не оставлял ли пользователь уже отзыв (защита от повторной отправки)
+    # защита от повторной отправки отзыва
     existing_review = course.reviews.filter_by(user_id=current_user.id).first()
     if existing_review:
         flash('Вы уже оставляли отзыв на этот курс.', 'warning')
@@ -150,10 +146,9 @@ def add_review(course_id):
         )
         db.session.add(review)
 
-        # Обновляем рейтинг курса (rating_sum и rating_num)
-        course.rating_sum = (course.rating_sum or 0) + rating # Учтем, если изначально там None или 0
+        # обновляем рейтинг курса
+        course.rating_sum = (course.rating_sum or 0) + rating 
         course.rating_num = (course.rating_num or 0) + 1
-        # db.session.add(course) # Не обязательно, т.к. course уже в сессии и отслеживается
 
         db.session.commit()
         flash('Спасибо за ваш отзыв!', 'success')

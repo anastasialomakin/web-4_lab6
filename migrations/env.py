@@ -61,7 +61,6 @@ SKIP_TABLES = ['questions', 'attributes', 'visit_logs', 'incidents', 'users2', '
 def include_object(object, name, type_, reflected, compare_to):
     if type_ == 'table' and name in SKIP_TABLES:
         return False
-    # В задании есть пример для индексов, если актуально:
     elif type_ == 'index' and name in ['unique_login', 'name']:
          return False
     return True

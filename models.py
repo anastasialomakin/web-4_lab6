@@ -32,7 +32,7 @@ class Category(Base):
     def __repr__(self):
         return '<Category %r>' % self.name
 
-class Review(Base): # Убедись, что Base - это твоя DeclarativeBase
+class Review(Base): 
     __tablename__ = 'reviews'
 
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
@@ -44,7 +44,7 @@ class Review(Base): # Убедись, что Base - это твоя DeclarativeB
 
     # Отношения
     course: Mapped["Course"] = relationship(back_populates="reviews")
-    user: Mapped["User"] = relationship(back_populates="reviews_written") # Изменил на reviews_written для ясности
+    user: Mapped["User"] = relationship(back_populates="reviews_written") 
 
     def __repr__(self):
         return f'<Review {self.id} by User {self.user_id} for Course {self.course_id}>'

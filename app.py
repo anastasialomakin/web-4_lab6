@@ -44,15 +44,15 @@ if __name__ == '__main__':
 
 """ from models import db, User
 
-existing_user = db.session.execute(db.select(User).filter_by(login='user1')).scalar_one_or_none()
+existing_user = db.session.execute(db.select(User).filter_by(login='user2')).scalar_one_or_none()
 
 if not existing_user:
-    user = User(first_name='Петр', last_name='Петров', middle_name='Иванович', login='user1') 
+    user = User(first_name='Алексей', last_name='Алексеев', middle_name='Михайлович', login='user2') 
     user.set_password('qwerty')
     db.session.add(user)
     db.session.commit()
-    print("Пользователь 'user' успешно создан.")
+    print("Пользователь 'user2' успешно создан.")
 else:
-    print("Пользователь 'user' уже существует.")
+    print("Пользователь 'user2' уже существует.")
 
 exit() """
